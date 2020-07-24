@@ -56,6 +56,23 @@ class Laporan_pdf extends MY_Controller {
        );
        $this->load->view('download_excel',$data);
      }
+     public function download_peserta()
+     {
+
+      $dompdf= new Dompdf();
+      $data['rangking']=$this->db->query("SELECT a.nama,a.alamat,a.rt,a.kategori, b.kelurahan,c.kecamatan from kampung a left join kelurahan b on a.kelurahan=b.kode_kelurahan left join kecamatan c on a.kecamatan=c.kode_kecamatan")->result();
+      $data['start']=0;
+      $data['tahun']=$tahun;
+      $html=$this->load->view('peserta',$data,true);
+     
+      $dompdf->load_html($html);
+      $dompdf->set_paper('A4','potrait');
+      $dompdf->render();
+     
+      $pdf = $dompdf->output();
+
+      $dompdf->stream('Cetak Hasil.pdf',array("Attachment"=>FALSE));
+     }
 }
 
 
